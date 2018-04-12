@@ -1,0 +1,2 @@
+1.20160801   a.新建 SPORT_TAG_R5F1026A_nRF24L01P
+             b.修改WDT模式 HALT或STOP模式时的操作停止

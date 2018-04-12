@@ -1,0 +1,218 @@
+//*******************************************************************************
+// Library       : Flash Data Library T04 (PicoFDL)
+//
+// File Name     : $Source: pfdl_sample_linker_file.xcl $
+// Lib. Version  : $RL78_FDL_LIB_VERSION_T04_IAR: V1.05 $
+// Mod. Revision : $Revision: 1.5 $
+// Mod. Date     : $Date: 2013/06/10 15:04:55MESZ $
+// Device(s)     : RL78/G13 (R5F100LE)
+// Description   : Linker sample file, please modify according to your device
+//******************************************************************************
+// DISCLAIMER
+// This software is supplied by Renesas Electronics Corporation and is only
+// intended for use with Renesas products. No other uses are authorized. This
+// software is owned by Renesas Electronics Corporation and is protected under
+// all applicable laws, including copyright laws.
+// THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING
+// THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT
+// LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+// AND NON-INFRINGEMENT. ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED.
+// TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS
+// ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE
+// FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR
+// ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE
+// BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+// Renesas reserves the right, without notice, to make changes to this software
+// and to discontinue the availability of this software. By using this software,
+// you agree to the additional terms and conditions found by accessing the
+// following link:
+// http://www.renesas.com/disclaimer
+//
+// Copyright (C) 2012-2013 Renesas Electronics Corporation. All rights reserved.
+//*******************************************************************************
+
+
+
+//-------------------------------------------------------------------------
+//      Define CPU
+//-------------------------------------------------------------------------
+-cRL78
+
+//-------------------------------------------------------------------------
+//      Size of the stack.
+//      Remove comment and modify number if used from command line.
+//-------------------------------------------------------------------------
+//-D_CSTACK_SIZE=80
+
+//-------------------------------------------------------------------------
+//      Near constant location.
+//      0 -> Mirrored in rom area 0x00000 - 0x0FFFF
+//      1 -> Mirrored in rom area 0x10000 - 0x1FFFF
+//      2 -> Writeable constants
+//      Remove comments and modify number if used from command line.
+//-------------------------------------------------------------------------
+//-D_NEAR_CONST_LOCATION=0
+//-D_NEAR_CONST_LOCATION_START=00800
+//-D_NEAR_CONST_LOCATION_END=00FFF
+
+//-------------------------------------------------------------------------
+//      Size of the heaps.
+//      Remove comment and modify number if used from command line.
+//-------------------------------------------------------------------------
+//-D_NEAR_HEAP_SIZE=400
+//-D_FAR_HEAP_SIZE=4000
+
+//-------------------------------------------------------------------------
+//      Used by DLIB only
+//      Define the format functions used by printf/scanf.
+//      Default is full formatting.
+//      Remove appropriate comment(s) to get reduced formatting
+//      if used from command line.
+//-------------------------------------------------------------------------
+//-e_PrintfTiny=_Printf
+//-e_PrintfSmall=_Printf
+//-e_PrintfLarge=_Printf
+
+//-e_ScanfSmall=_Scanf
+//-e_ScanfLarge=_Scanf
+
+//-------------------------------------------------------------------------
+//      Used by DLIB only
+//      Define if row buffering should be used by terminal output.
+//      Default is no buffering.
+//      Remove comment to get buffered terminal output if used from command line.
+//-------------------------------------------------------------------------
+//-e__write_buffered=__write
+
+//-------------------------------------------------------------------------
+//      Used by CLIB only
+//      Define the format functions used by printf/scanf.
+//      Default is full formatting.
+//      Remove appropriate comment(s) to get reduced formatting
+//      if used from command line.
+//-------------------------------------------------------------------------
+//-e_small_write=_formatted_write
+//-e_medium_write=_formatted_write
+
+//-e_medium_read=_formatted_read
+
+//-------------------------------------------------------------------------
+//      Allocate the read only segments that are mapped to ROM.
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//      Interrupt vector segment.
+//-------------------------------------------------------------------------
+-Z(CODE)INTVEC=00000-0007F
+
+//-------------------------------------------------------------------------
+//      CALLT vector segment.
+//-------------------------------------------------------------------------
+-Z(CODE)CLTVEC=00080-000BF
+
+//-------------------------------------------------------------------------
+//      OPTION BYTES segment.
+//-------------------------------------------------------------------------
+-Z(CODE)OPTBYTE=000C0-000C3
+
+//-------------------------------------------------------------------------
+//      SECURITY_ID segment.
+//-------------------------------------------------------------------------
+-Z(CODE)SECUID=000C4-000CD
+
+//-------------------------------------------------------------------------
+//      Reserved ROM area for Minicube Firmware: 000D0-00383
+//-------------------------------------------------------------------------
+
+
+//-------------------------------------------------------------------------
+//      FAR far data segments.
+//      The FAR_I and FAR_ID segments must start at the same offset
+//      in a 64 Kb page.
+//-------------------------------------------------------------------------
+-Z(FARCONST)FAR_ID=02FFF-FFFF
+-Z(FARDATA)FAR_I=FF700-FFEDF
+
+
+// PFDL
+// ============
+-Z(CODE)PFDL_COD=[01000-01FFE]/10000
+
+
+//-------------------------------------------------------------------------
+//      Startup, Runtime-library, Near, Interrupt
+//      and CALLT functions code segment.
+//-------------------------------------------------------------------------
+-Z(CODE)RCODE,CODE=02000-FFFF
+
+//-------------------------------------------------------------------------
+//      Far functions code segment.
+//-------------------------------------------------------------------------
+-Z(CODE)XCODE=[02000-FFFF]/10000
+
+//-------------------------------------------------------------------------
+//      Data initializer segments.
+//-------------------------------------------------------------------------
+-Z(CONST)NEAR_ID=[02000-FFFF]/10000
+-Z(CONST)SADDR_ID=[02000-FFFF]/10000
+-Z(CONST)DIFUNCT=[02000-FFFF]/10000
+
+//-------------------------------------------------------------------------
+//      Constant segments
+//-------------------------------------------------------------------------
+-Z(CONST)NEAR_CONST=_NEAR_CONST_LOCATION_START-_NEAR_CONST_LOCATION_END
+-P(CONST)FAR_CONST=[02000-FFFF]/10000
+-Z(CONST)SWITCH=02000-FFFF
+-Z(CONST)FSWITCH=[02000-FFFF]/10000
+
+//-------------------------------------------------------------------------
+//      Allocate the read/write segments that are mapped to RAM.
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//      Short address data and workseg segments.
+//-------------------------------------------------------------------------
+-Z(DATA)WRKSEG=FFE20-FFEDF
+-Z(DATA)SADDR_I,SADDR_Z,SADDR_N=FFE20-FFEDF
+
+//-------------------------------------------------------------------------
+//      Near data segments.
+//-------------------------------------------------------------------------
+-Z(DATA)NEAR_I,NEAR_Z,NEAR_N=FF700-FFEDF
+
+
+//-------------------------------------------------------------------------
+//      Huge data segments.
+//-------------------------------------------------------------------------
+-Z(DATA)HUGE_Z=FFC00-FFE1F
+-P(DATA)HUGE_N=FFC00-FFE1F
+
+
+//-------------------------------------------------------------------------
+//      Far data segments.
+//-------------------------------------------------------------------------
+-Z(FARDATA)FAR_Z=FF700-FFEDF
+-P(DATA)FAR_N=[FF700-FFEDF]/10000
+
+
+//-------------------------------------------------------------------------
+//      Heap segments.
+//-------------------------------------------------------------------------
+-Z(DATA)NEAR_HEAP+_NEAR_HEAP_SIZE=FF700-FFEDF
+-Z(DATA)FAR_HEAP+_FAR_HEAP_SIZE=[FF700-FFEDF]/10000
+
+
+//-------------------------------------------------------------------------
+//      Stack segment.
+//-------------------------------------------------------------------------
+-Z(DATA)CSTACK+_CSTACK_SIZE=FF700-FFEDF
+
+
+//-------------------------------------------------------------------------
+//      Select the output file format if used from command line.
+//      Remove comment to select the file format if used from command line.
+//-------------------------------------------------------------------------
+//-Fdebug
+
+
+//-------------------------------------------------------------------------
+//      End of File
+//-------------------------------------------------------------------------
